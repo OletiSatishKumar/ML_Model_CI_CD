@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:   # ✅ valid job name
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -36,8 +36,8 @@ jobs:
         run: |
           ls -la artifacts/
 
-      - name: Upload artifacts   # ✅ fixed spacing
-        uses: actions/upload-artifact@v3
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4   # ✅ FIXED
         with:
           name: model-artifacts-${{ matrix.python-version }}-${{ github.run_id }}
           path: artifacts/
