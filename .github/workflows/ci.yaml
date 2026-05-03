@@ -1,36 +1,43 @@
-name : CI Pipeline for Model Training and Evaluation
+name: CI Pipeline for Model Training and Evaluation
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
-  matrix:
+  build:   # ✅ valid job name
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         python-version: [3.10, 3.11, 3.12]
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Upgrade pip & install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    - name: Run model training and evaluation
-      run: |
-        python train.py
-        ls -la artifacts/
+      - name: Run model training
+        run: |
+          python train.py
 
-    -name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: model-artifacts-${{ matrix.python-version }}-${{ github.run_id }}
-        path: artifacts/
-        
+      - name: Check artifacts folder
+        run: |
+          ls -la artifacts/
+
+      - name: Upload artifacts   # ✅ fixed spacing
+        uses: actions/upload-artifact@v3
+        with:
+          name: model-artifacts-${{ matrix.python-version }}-${{ github.run_id }}
+          path: artifacts/
